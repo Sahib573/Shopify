@@ -1,0 +1,53 @@
+{% extends "shop/basic.html" %}
+
+{% block title %} complaints {% endblock %}
+{% block body %}
+<div class="container">
+    <form class="form-signin" action="/shop/complaint/" method="POST">
+        {% csrf_token %}
+        <div class="text-center mb-4">
+            <!--            <img class="mb-4" src="/docs/4.3/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
+            <h1 class="h3 mb-3 font-weight-normal">Floating labels</h1>
+            <p>Build form controls with floating labels via the <code>:placeholder-shown</code> pseudo-element. <a
+                    href="https://caniuse.com/#feat=css-placeholder-shown">Works in latest Chrome, Safari, and
+                Firefox.</a></p>
+        </div>
+
+        <div class="form-label-group my-2">
+            <label for="comName">Name</label>
+            <input type="text" id="comName" name="comName" class="form-control" placeholder="Enter your name"
+                   required="" autofocus="">
+        </div>
+
+        <div class="form-label-group my-2">
+            <label for="comEmail">Email address</label>
+            <input type="email" id="comEmail" name="comEmail" class="form-control" placeholder="Email address"
+                   required="" autofocus="">
+        </div>
+
+        <div class="form-label-group my-2">
+            <label for="comSub">Subject</label>
+            <input type="text" id="comSub" name="comSub" class="form-control" placeholder="complaint subject"
+                   required="">
+        </div>
+
+        <div class="form-label-group my-2">
+            <label for="comOrderid">Order_id</label>
+            <input type="number" id="comOrderid" name="comOrderid" class="form-control"
+                   placeholder="Enter Order Number" required="">
+        </div>
+
+        <div class="form-label-group my-2">
+            <label for="comTextarea">Message....</label>
+            <textarea class="form-control" name="comTextarea" id="comTextarea" rows="3"></textarea>
+        </div>
+
+        <button class="btn btn-lg btn-success btn-block" type="submit">Submit</button>
+        <p class="mt-5 mb-3 text-muted text-center">© 2017-2019</p>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

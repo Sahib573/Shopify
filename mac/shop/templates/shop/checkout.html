@@ -1,0 +1,90 @@
+{% extends 'shop/basic.html' %}
+{% block title%} Checkout - My Awesome Cart{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="col my-4">
+        <h2>Step 1 - My Awesome Cart Express Checkout - Review Your Cart Items</h2>
+        <div class="my-4">
+            <ul class="list-group" id="items">
+            </ul>
+        </div>
+    </div>
+    <div class="col my-4">
+        <h2>Step 2 - Enter Address & Other Details:</h2>
+        <form action="/shop/checkout/" method="POST">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="chkname">Name</label>
+                    <input type="name" class="form-control" id="chkname" name="chkname" placeholder="Name">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="chkemail">Email</label>
+                    <input type="email" class="form-control" id="chkemail" name="chkemail" placeholder="Email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="chkaddr1">Address</label>
+                <input type="text" class="form-control" id="chkaddr1" name="chkaddr1" placeholder="1234 Main St">
+            </div>
+            <div class="form-group">
+                <label for="chkaddr2">Address line 2</label>
+                <input type="text" class="form-control" id="chkaddr2" name="chkaddr2"
+                       placeholder="Apartment, studio, or floor">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="chkcity">City</label>
+                    <input type="text" class="form-control" id="chkcity" name="chkcity">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="chkstate">State</label>
+                    <input type="text" class="form-control" id="chkstate" name="chkstate" placeholder="Enter State">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="chkzipcode">Zip</label>
+                    <input type="text" class="form-control" id="chkzipcode" name="chkzipcodename">
+                </div>
+                <button type=" submit" class="btn btn-primary" id="place_ordr">Place Order</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    if (localStorage.getItem('cart') == null) {
+        var cart = {};
+    } else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+    console.log(cart);
+    var sum = 0;
+    if ($.isEmptyObject(cart)) {
+        //if object is empty
+        mystr = `<p>Your cart is empty, please add some items to your cart before checking out!</p>`
+        $('#items').append(mystr);
+    } else {
+        console.log(cart)
+        for (item in cart) {
+            let name = cart[item][1];
+            let qty = cart[item][0];
+            sum = sum + qty;
+            console.log(cart[item][1]);
+            console.log(cart[item][0]);
+            mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${name}
+                    <span class="badge badge-primary badge-pill">${qty}</span>
+                </li>`
+            $('#items').append(mystr);
+        }
+    }
+    document.getElementById('display_cart').innerHTML = sum;
+<!--    document.getElementById('place_ordr').addEventListener('click',()=>{-->
+    {% if success %}
+    alert(`Your order id is {{id}}`)
+    localStorage.clear();
+    document.location="/shop";
+    {% endif %}
+
+</script>
+{% endblock %}
