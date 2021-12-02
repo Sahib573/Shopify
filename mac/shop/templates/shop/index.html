@@ -43,6 +43,7 @@
                 <div class="card-body">
                     <h5 class="card-title" id="namepr{{prod.id}}">{{prod.prod_name}}</h5>
                     <p class="card-text">{{prod.prod_desc}}</p>
+                    <p class="card-text"><b>Price : {{prod.price}}</b></p>
                     <div class="row">
                         <span id="divpr{{prod.id}}" class="divpr">
                             <button id="pr{{prod.id}}" class="col btn btn-primary cart ">Add to Cart</button>
@@ -109,7 +110,7 @@
         // document.getElementById('popcart').setAttribute('data-content', popStr);
         document.getElementById('checkout').innerHTML = str_
         $('#popcart').popover('show');
-        $('#checkout').popover('show');
+<!--        $('#checkout').popover('show');-->
     }
     function clearCart() {
         cart = JSON.parse(localStorage.getItem('cart'));

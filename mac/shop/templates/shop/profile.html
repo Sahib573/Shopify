@@ -1,0 +1,31 @@
+{% extends 'shop/basic.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Register {% endblock %}
+
+{% block body %}
+<h4 class="text-center text-capitalize font-weight-bold font-italic">{{ user.username }}</h4>
+<div class="container mt-4">
+    <div class="row justify-content-around align-items-center" style="width: 80vw;">
+        <div class="col-6 col-md-6 col-xl-6">
+            <div class="card">
+                <img src="{{user.profile.image.url}}"  class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Username : {{ user.username }}</h5>
+                    <p class="card-text font-italic"> <b>Emial</b> : {{ user.email }}</p>
+                    <p class="card-text font-italic"><b>Address</b>  :{{ user.profile.address }}</p>
+                    <p class="card-text font-italic"> <b>PhoneNumber</b> : {{ user.profile.Number }}</p>
+                    <div class="row">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+console.log('kdnjc')
+    console.log({{user.profile.image.url}})
+
+</script>
+{% endblock %}

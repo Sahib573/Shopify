@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.db.models.fields import CharField
 
 
@@ -26,6 +27,7 @@ class Contact_table(models.Model):
 
 
 class Order_table(models.Model):
+    order_details = models.CharField(max_length=2500, default='')
     odrid = models.AutoField(primary_key=True)
     name = models.CharField(max_length=39)
     email = models.CharField(max_length=30)
@@ -36,7 +38,7 @@ class Order_table(models.Model):
 
 
 class complaint_table(models.Model):
-    # com_id = models.ForeignKey(Order_table, on_delete=models.SET_NULL,null=True,blank=True)
+    com_id = models.ForeignKey(Order_table, on_delete=models.SET_NULL)
     com_name = models.CharField(max_length=20)
     com_email = models.CharField(max_length=30)
     com_sub = models.CharField(max_length=35)
@@ -51,3 +53,58 @@ class Order_update(models.Model):
 
     def __str__(self):
         return self.update_desc[0:5] + "..."
+
+
+class cancel_table(models.Model):
+    orderid = models.IntegerField()
+    cancel_date = models.DateField()
+    email = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.orderid
+
+
+class employee(models.Model):
+    emp_id = models.AutoField(primary_key=True)
+    Designation = models.CharField(max_length=50)
+    Adhaar_id = models.IntegerField()
+    joining_date = models.DateField()
+    address = models.CharField(max_length=100)
+    name = models.CharField(max_length=50)
+    number = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+
+# class customer(models.Model):
+#     emp_id = models.AutoField(primary_key=True)
+#     Adhaar_id = models.IntegerField()
+#     joining_date = models.DateField()
+#     address = models.CharField(max_length=100)
+#     name = models.CharField(max_length=50)
+#     number = models.IntegerField()
+#
+#     def __str__(self):
+#         return self.name
+
+
+class supplier(models.Model):
+    supplier_id = models.AutoField(primary_key=True)
+    joining_date = models.DateField()
+    address = models.CharField(max_length=100)
+    name = models.CharField(max_length=50)
+    number = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='main.jpg', upload_to='profile_imgs')
+    address = models.CharField(max_length=100)
+    number = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"

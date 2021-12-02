@@ -11,10 +11,15 @@
     </div>
         <h1 class="display-4 font-weight-normal">{{product.prod_name}}</h1>
         <p class="lead font-weight-normal">{{product.prod_desc}}</p>
-        <a class="btn btn-outline-secondary" href="#">Order Now</a>
+        <a class="btn btn-outline-secondary" id="order" href="/shop">Order Now</a>
     </div>
 
     <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
 </div>
 
+{% endblock %}
+{% block js %}
+<script>
+$('#order').on('click',function(){alert('Add item to cart and checkout')})
+</script>
 {% endblock %}

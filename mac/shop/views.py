@@ -1,12 +1,30 @@
 from django.db import models
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
-from .models import Products, Contact_table, Order_table, complaint_table, Order_update
+from .models import Products, Contact_table, Order_table, complaint_table, Order_update, cancel_table
 from math import ceil
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .forms import UserRegisterForm
 import json
 
 
-# Create your views here.
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            # messages.success(request,f"Hey {username}, you have created your account successfully")
+            message = f"Hey {username}, you have created your account successfully"
+            success = True
+            return redirect('/shop/login/', {'success': success, 'messages': message})
+    else:
+        form = UserRegisterForm()
+
+    return render(request, 'shop/register.html', {'form': form})
+
 
 def index(request):
     product = Products.objects.all()
@@ -21,6 +39,11 @@ def index(request):
 
 def about(request):
     return render(request, 'shop/about.html')
+
+
+@login_required
+def profile(request):
+    return render(request, 'shop/profile.html')
 
 
 def contact(request):
@@ -67,7 +90,8 @@ def tracker(request):
             updates = []
             for item in update:
                 updates.append({'text': item.update_desc, 'time': item.upd_time})
-                response = json.dumps(updates, default=str)
+                response = json.dumps([updates, order[0].order_details, order[0]], default=str)
+            print(order[0].order_details)
             return HttpResponse(response)
         else:
             return HttpResponse('{}')
@@ -77,18 +101,76 @@ def tracker(request):
 def checkout(request):
     if request.method == 'POST':
         name = request.POST.get('chkname', '')
+        order_details = request.POST.get('orderdetails')
         email = request.POST.get('chkemail', '')
         state = request.POST.get('chkState', '')
         addr = request.POST.get('chkaddr1', '') + ' ' + request.POST.get('chkaddr2', '')
         city = request.POST.get('chkcity', '')
         zipcode = request.POST.get('chkzipcode', '')
         ordr = Order_table(name=name, email=email, state=state,
-                           addr=addr, city=city, zipcode=zipcode)
+                           addr=addr, city=city, zipcode=zipcode, order_details=order_details)
         ordr.save()
         ordrid = Order_table.objects.filter(name=name)[0].pk
-        update = Order_update(orderId=ordrid, update_desc="Order has been placed successfully")
+        update = Order_update(orderId=ordrid,
+                              update_desc="Order has been placed successfully")
         update.save()
         success = True
         id = ordrid
         return render(request, 'shop/checkout.html', {'success': success, 'id': id})
     return render(request, 'shop/checkout.html')
+
+
+def cancel(request):
+    return render(request, 'shop/cancel.html')
+
+
+def cancelorder(request):
+    if request.method == "POST":
+        orderId = request.POST.get('orderId', '')
+        email = request.POST.get('email', '')
+        run = True
+        fail = False
+        if email == '' or orderId == '':
+            fail = True
+            run = False
+        update = Order_update.objects.filter(orderId=orderId)
+        cancl = cancel_table(orderid=orderId, email=email, cancel_date=update[0].upd_time)
+        cancl.save()
+        order = Order_table.objects.filter(email=email, odrid=orderId)
+        update.delete()
+        order.delete()
+        # print('nhh')
+        success = False
+        id = ''
+        if not update.exists() and run:
+            success = True
+            id = orderId
+    return render(request, 'shop/cancel.html', {'success': success, 'id': id, 'fail': fail})
+
+
+def replace(request):
+    return render(request, 'shop/replace.html')
+
+
+def replaceorder(request):
+    if request.method == "POST":
+        orderId = request.POST.get('orderId', '')
+        email = request.POST.get('email', '')
+        run = True
+        fail = False
+        if email == '' or orderId == '':
+            fail = True
+            run = False
+        order = Order_table.objects.filter(email=email, odrid=orderId)
+        update = Order_update.objects.filter(orderId=orderId)
+        print(update)
+        update.delete()
+        order.delete()
+        print('nhh')
+        print(update)
+        success = False
+        id = ''
+        if not update.exists() and run:
+            success = True
+            id = orderId
+    return render(request, 'shop/replace.html', {'success': success, 'id': id, 'fail': fail})
